@@ -1,0 +1,52 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+        hasher:
+            algorithm: bcrypt
+            cost: 4
+
+
+    # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    providers:
+        user_provider:
+            id: app.security.account_provider
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/login
+            anonymous: ~
+            guard:
+                authenticators:
+                    - app.security.form_authenticator
+            provider: user_provider
+            # session disabled
+            stateless: true
+
+        public:
+            pattern: ^/public/
+            anonymous: ~
+            stateless: true
+
+        token:
+            guard:
+                authenticators:
+                    - app.security.token_authenticator
+            provider: user_provider
+            # session disabled
+            stateless: true
+
+    access_control:
+        - { path: ^/public/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_USER }
+
+    role_hierarchy:
+        # ROLE_ADMIN has ROLE_USER permissions.
+        ROLE_ADMIN: ROLE_USER
+        # ROLE_SUPER_ADMIN has ROLE_USER and ROLE_ADMIN permissions.
+        ROLE_SUPER_ADMIN: ROLE_ADMIN

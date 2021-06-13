@@ -1,0 +1,38 @@
+/app/config/parameters.yml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
+.idea/
+__composer.lock
+*.env
+*.php~
+
+# Managed by Composer
+/bin/*
+!bin/console
+!bin/symfony_requirements
+/vendor/
+
+# Assets and user uploads
+/web/uploads/
+
+
+# Composer PHAR
+/composer.phar
+
+
+/var/
+
+.idea
+.vagrant
+.DS_Store
+/package-lock.json
+/composer.lock
