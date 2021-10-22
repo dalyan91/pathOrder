@@ -4,7 +4,7 @@
 parameters:
     database_host: mysql
     database_port: 3307
-    database_name: ideasoft
+    database_name: pathOrder
     database_user: root
     database_password: adam4053
     
