@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -27,38 +26,29 @@ class Customer
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="title", type="string", length=255)
      * @Serializer\Groups({"customer"})
      */
-    private $name;
+    private $title;
 
     /**
-     * @var DateTime
-     *
-     * @ORM\Column(name="since", type="datetime", nullable=true)
-     * @Serializer\Groups({"customer"})
-     *
-     */
-    private $since;
-
-    /**
-     * @ORM\Column(name="revenue", type="float")
-     * @Serializer\Groups({"customer"})
-     */
-    private $revenue;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Ordering", mappedBy="customer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="customer", cascade={"persist"})
      * @Serializer\Groups({"customer.order"})
      */
     private $order;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Account", mappedBy="customer", cascade={"persist"})
+     * @Serializer\Groups({"customer.account"})
+     */
+    private $account;
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->since = new \DateTime("now");
         $this->order = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->account = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -72,85 +62,37 @@ class Customer
     }
 
     /**
-     * Set name
+     * Set title
      *
-     * @param string $name
+     * @param string $title
      *
      * @return Customer
      */
-    public function setName($name)
+    public function setTitle($title)
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get title
      *
      * @return string
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->name;
-    }
-
-    /**
-     * Set since
-     *
-     * @param \DateTime $since
-     *
-     * @return Customer
-     */
-    public function setSince($since)
-    {
-        $this->since = $since;
-
-        return $this;
-    }
-
-    /**
-     * Get since
-     *
-     * @return \DateTime
-     */
-    public function getSince()
-    {
-        return $this->since;
-    }
-
-    /**
-     * Set revenue
-     *
-     * @param float $revenue
-     *
-     * @return Customer
-     */
-    public function setRevenue($revenue)
-    {
-        $this->revenue = $revenue;
-
-        return $this;
-    }
-
-    /**
-     * Get revenue
-     *
-     * @return float
-     */
-    public function getRevenue()
-    {
-        return $this->revenue;
+        return $this->title;
     }
 
     /**
      * Add order
      *
-     * @param \AppBundle\Entity\Ordering $order
+     * @param \AppBundle\Entity\Order $order
      *
      * @return Customer
      */
-    public function addOrder(\AppBundle\Entity\Ordering $order)
+    public function addOrder(\AppBundle\Entity\Order $order)
     {
         $this->order[] = $order;
 
@@ -160,9 +102,9 @@ class Customer
     /**
      * Remove order
      *
-     * @param \AppBundle\Entity\Ordering $order
+     * @param \AppBundle\Entity\Order $order
      */
-    public function removeOrder(\AppBundle\Entity\Ordering $order)
+    public function removeOrder(\AppBundle\Entity\Order $order)
     {
         $this->order->removeElement($order);
     }
@@ -175,5 +117,39 @@ class Customer
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Add account
+     *
+     * @param \AppBundle\Entity\Account $account
+     *
+     * @return Customer
+     */
+    public function addAccount(\AppBundle\Entity\Account $account)
+    {
+        $this->account[] = $account;
+
+        return $this;
+    }
+
+    /**
+     * Remove account
+     *
+     * @param \AppBundle\Entity\Account $account
+     */
+    public function removeAccount(\AppBundle\Entity\Account $account)
+    {
+        $this->account->removeElement($account);
+    }
+
+    /**
+     * Get account
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAccount()
+    {
+        return $this->account;
     }
 }

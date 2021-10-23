@@ -24,7 +24,7 @@ class ProductRepository  extends EntityRepository
      * @param array|null $orderBy
      * @param null $limit
      * @param int $offset
-     * @return mixed
+     * @return Product[]
      */
     public function findProducts(array $orderBy = null, $limit = null, $offset = 0)
     {
@@ -36,22 +36,6 @@ class ProductRepository  extends EntityRepository
         $this->initPagination($query, $limit, $offset);
         return $query->getQuery()->getResult();
 
-    }
-
-    /**
-     * @param $id
-     * @return Product
-     * @throws NonUniqueResultException
-     */
-    public function findProductById($id)
-    {
-        $query = $this->getEntityManager()->createQueryBuilder()
-            ->select('p')
-            ->from('AppBundle:Product', 'p')
-            ->where('p.id=:id')
-            ->setParameter('id',$id)
-        ;
-        return $query->getQuery()->getOneOrNullResult();
     }
 
     /**

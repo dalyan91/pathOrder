@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * User
  *
- * @ORM\Table("users")
+ * @ORM\Table("account")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AccountRepository")
  * @UniqueEntity(fields={"email"}, message="This email is already used.")
  */
@@ -72,33 +72,6 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     /**
      * @var string
      *
-     * @ORM\Column(name="raw_password", type="string", length=64, nullable=true)
-     *
-     * @Serializer\Exclude()
-     */
-    private $rawPassword;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="reset_password_token", type="string", length=500, nullable=true)
-     *
-     * @Serializer\Exclude()
-     */
-    private $resetPasswordToken;
-
-    /**
-     * @var DateTime $resetPasswordTokenExpire
-     *
-     * @ORM\Column(name="reset_password_token_expire", type="datetime", nullable=true)
-     *
-     * @Serializer\Exclude()
-     */
-    private $resetPasswordTokenExpire;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="session_token", type="string", length=255, nullable=true)
      * @Serializer\Groups({"account"})
      */
@@ -133,60 +106,20 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     private $active = true;
 
     /**
-     * @ORM\OneToMany(targetEntity="Ordering", mappedBy="account")
+     * @ORM\OneToMany(targetEntity="Order", mappedBy="account")
+     * @Serializer\Groups({"account.order"})
      */
     private $order;
 
     /**
-     * Constructor
+     * @ORM\ManyToOne(targetEntity="Customer", inversedBy="account", cascade={"persist"})
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", onDelete="CASCADE")
+     * @Serializer\Groups({"ordering.customer"})
      */
-    public function __construct()
-    {
-        $this->roles = [];
-
-    }
+    private $customer;
 
     /**
-     * Get username
-     *
-     * @return mixed
-     */
-    public function getUsername()
-    {
-        return $this->name .' '. $this->surname;
-    }
-
-    /**
-     * Get Salt
-     * Require for interface
-     *
-     * @return null
-     */
-    public function getSalt()
-    {
-        return null;
-    }
-
-    /**
-     * Get password
-     * Require for interface
-     *
-     * @return mixed
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Require for interface
-     */
-    public function eraseCredentials(){}
-
-    /**
-     * Require for interface
-     *
-     * @return string
+     * @return string|null
      */
     public function serialize()
     {
@@ -198,8 +131,6 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Require for interface
-     *
      * @param string $serialized
      */
     public function unserialize($serialized)
@@ -212,8 +143,6 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Return dynamically encoder name
-     *
      * @return string
      */
     public function getEncoderName()
@@ -222,23 +151,6 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Set roles
-     *
-     * @param array $roles
-     *
-     * @return Account
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * Get roles
-     * Require for interface
-     *
      * @return array
      */
     public function getRoles()
@@ -247,41 +159,39 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Does user have a role
-     *
-     * @param $role
-     * @return bool
+     * @return string|null
      */
-    public function hasRole($role)
+    public function getPassword()
     {
-        return in_array(strtoupper($role), $this->getRoles(), true);
+        return $this->password;
     }
 
     /**
-     * Add new role
-     *
-     * @param string $role
-     * @return Account
+     * @return null
      */
-    public function addRole($role)
+    public function getSalt()
     {
-        $this->roles[] = $role;
-
-        return $this;
+        return null;
     }
 
     /**
-     * Set id
-     *
-     * @param integer $id
-     *
-     * @return Account
+     * @return string
      */
-    public function setId($id)
+    public function getUsername()
     {
-        $this->id = $id;
+        return $this->name .' '. $this->surname;
+    }
 
-        return $this;
+    /**
+     * Require for interface
+     */
+    public function eraseCredentials(){}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->order = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -316,6 +226,30 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set surname
+     *
+     * @param string $surname
+     *
+     * @return Account
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    /**
+     * Get surname
+     *
+     * @return string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
     }
 
     /**
@@ -357,57 +291,47 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Set resetPasswordToken
+     * Set sessionToken
      *
-     * @param string $resetPasswordToken
+     * @param string $sessionToken
      *
      * @return Account
      */
-    public function setResetPasswordToken($resetPasswordToken)
+    public function setSessionToken($sessionToken)
     {
-        $this->resetPasswordToken = $resetPasswordToken;
+        $this->sessionToken = $sessionToken;
 
         return $this;
     }
 
     /**
-     * Get resetPasswordToken
+     * Get sessionToken
      *
      * @return string
      */
-    public function getResetPasswordToken()
+    public function getSessionToken()
     {
-        return $this->resetPasswordToken;
+        return $this->sessionToken;
     }
 
     /**
-     * Set resetPasswordTokenExpire
+     * Set roles
      *
-     * @param DateTime $resetPasswordTokenExpire
+     * @param array $roles
      *
      * @return Account
      */
-    public function setResetPasswordTokenExpire($resetPasswordTokenExpire)
+    public function setRoles($roles)
     {
-        $this->resetPasswordTokenExpire = $resetPasswordTokenExpire;
+        $this->roles = $roles;
 
         return $this;
-    }
-
-    /**
-     * Get resetPasswordTokenExpire
-     *
-     * @return DateTime
-     */
-    public function getResetPasswordTokenExpire()
-    {
-        return $this->resetPasswordTokenExpire;
     }
 
     /**
      * Set lastLogin
      *
-     * @param DateTime $lastLogin
+     * @param \DateTime $lastLogin
      *
      * @return Account
      */
@@ -421,35 +345,11 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     /**
      * Get lastLogin
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getLastLogin()
     {
         return $this->lastLogin;
-    }
-
-    /**
-     * Set surname
-     *
-     * @param string $surname
-     *
-     * @return Account
-     */
-    public function setSurname($surname)
-    {
-        $this->surname = $surname;
-
-        return $this;
-    }
-
-    /**
-     * Get surname
-     *
-     * @return string
-     */
-    public function getSurname()
-    {
-        return $this->surname;
     }
 
     /**
@@ -477,60 +377,13 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     }
 
     /**
-     * Get raw password
-     *
-     * @return mixed
-     */
-    public function getRawPassword()
-    {
-        return $this->rawPassword;
-    }
-
-    /**
-     * Set raw password
-     *
-     * @param string $rawPassword
-     * @return Account
-     */
-    public function setRawPassword($rawPassword)
-    {
-        $this->rawPassword = $rawPassword;
-
-        return $this;
-    }
-
-    /**
-     * Set session token
-     *
-     * @param string $token
-     *
-     * @return Account
-     */
-    public function setSessionToken($token)
-    {
-        $this->sessionToken = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get session token
-     *
-     * @return string
-     */
-    public function getSessionToken()
-    {
-        return $this->sessionToken;
-    }
-
-    /**
      * Add order
      *
-     * @param \AppBundle\Entity\Ordering $order
+     * @param \AppBundle\Entity\Order $order
      *
      * @return Account
      */
-    public function addOrder(\AppBundle\Entity\Ordering $order)
+    public function addOrder(\AppBundle\Entity\Order $order)
     {
         $this->order[] = $order;
 
@@ -540,9 +393,9 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     /**
      * Remove order
      *
-     * @param \AppBundle\Entity\Ordering $order
+     * @param \AppBundle\Entity\Order $order
      */
-    public function removeOrder(\AppBundle\Entity\Ordering $order)
+    public function removeOrder(\AppBundle\Entity\Order $order)
     {
         $this->order->removeElement($order);
     }
@@ -555,5 +408,29 @@ class Account implements UserInterface, EncoderAwareInterface ,\Serializable
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Set customer
+     *
+     * @param \AppBundle\Entity\Customer $customer
+     *
+     * @return Account
+     */
+    public function setCustomer(\AppBundle\Entity\Customer $customer = null)
+    {
+        $this->customer = $customer;
+
+        return $this;
+    }
+
+    /**
+     * Get customer
+     *
+     * @return \AppBundle\Entity\Customer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
     }
 }

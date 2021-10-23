@@ -2,10 +2,8 @@
 
 namespace AppBundle\Manager;
 
-
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 abstract class AbstractManager
 {

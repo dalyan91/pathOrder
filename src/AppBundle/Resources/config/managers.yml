@@ -3,30 +3,8 @@ services:
         class: AppBundle\Manager\AccountManager
         arguments:
             - "@doctrine.orm.entity_manager"
-            - "@security.password_encoder"
-            - "@event_dispatcher"
-    app.category_manager:
-        class: AppBundle\Manager\CategoryManager
-        arguments:
-            - "@doctrine.orm.entity_manager"
-    app.customer_manager:
-        class: AppBundle\Manager\CustomerManager
-        arguments:
-            - "@doctrine.orm.entity_manager"
-    app.discount_manager:
-        class: AppBundle\Manager\DiscountManager
-        arguments:
-            - "@doctrine.orm.entity_manager"
-    app.ordering_manager:
-        class: AppBundle\Manager\OrderingManager
-        arguments:
-            - "@doctrine.orm.entity_manager"
-    app.order_item_manager:
-        class: AppBundle\Manager\OrderItemManager
-        arguments:
-            - "@doctrine.orm.entity_manager"
-    app.order_discount_manager:
-        class: AppBundle\Manager\OrderDiscountManager
+    app.order_manager:
+        class: AppBundle\Manager\OrderManager
         arguments:
             - "@doctrine.orm.entity_manager"
     app.product_manager:

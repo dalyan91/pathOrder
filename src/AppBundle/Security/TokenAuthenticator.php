@@ -122,7 +122,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        throw new \Exception('Authentication required.');
+        throw new \Exception('Authentication required.',401);
     }
 
     /**
