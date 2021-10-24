@@ -23,7 +23,7 @@ Postman çalışma alanı
 
 2. Postman import kısmından link kısmına tıklanarak aşağıdaki environment linkini yazarak çalışmalarımıza dahil edebiliriz.
 
-**environment** : /order.postman_environment.json
+**environment** : https://raw.githubusercontent.com/dalyan91/pathOrder/main/pathOrder.postman_environment.json
 
 3. İki import işlemini gerçekleştirdikten sonra environment seçeneğinden pathOrder seçilmeli.
 
