@@ -43,4 +43,4 @@ Sipariş işlemleri
 3. Sipariş için gerekli diğer alanları doldurduktan sonra send butonu ile verileri gönderebiliriz.
 4. Postman çalışma alanımızda yer alan Order bölümündeki list kısmından verdiğimiz siparişlerin listesini görüntüleye bilir ve buradan elde edeceğimiz id ile get methodu kullanılarak sipariş detayını görüntüleyebilir veya update ile siparişimizi güncelleyebiliriz.
 5. Siraşimizi güncelleyebilmek için shippingDate şuandan büyük olmalı.
-6. Oturum açan kişi kendi firmasının sipariş listesini görüntüleyebilir, düzenleyebilir ve oluşturabilir. Diğer firmaların siparişlerine erişemez.
+6. Oturum açan kullanıcı kendi firmasının sipariş listesini görüntüleyebilir, düzenleyebilir ve oluşturabilir. Diğer firmaların siparişlerine erişemez.
